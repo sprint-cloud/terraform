@@ -1,11 +1,13 @@
-resource "xenorchestra_cloud_config" "node_config" {
-  name = "k3s node cloud config"
-  template = templatefile("${path.module}/cloud_config.tftpl", {
-    ssh_authorized_keys = var.ssh_public_key
-    apt_upgrade = var.apt_upgrade
-  })
+# resource "xenorchestra_cloud_config" "node_config" {
+#   name = "k3s node cloud config"
+#   template = templatefile("${path.module}/cloud_config.tftpl", {
+#     ssh_authorized_keys = var.ssh_public_key
+#     apt_upgrade = var.apt_upgrade
+#   })
+# }
+locals {
+  hostname_prefix = lower(replace("${var.cluster_name}", " ", "-"))
 }
-
 
 resource "xenorchestra_vm" "k3s_servers" {
     count = var.k3s_servers.num
@@ -15,7 +17,11 @@ resource "xenorchestra_vm" "k3s_servers" {
     memory_max = var.k3s_servers.memory * pow(1024,2)
     template = data.xenorchestra_template.template.id
     affinity_host = data.xenorchestra_pool.pool.master
-    cloud_config = xenorchestra_cloud_config.node_config.template
+    cloud_config = templatefile("${path.module}/cloud_config.tftpl", {
+      hostname = "${local.hostname_prefix}-server-${count.index + 1}"
+      ssh_authorized_keys = var.ssh_public_key
+      apt_upgrade = var.apt_upgrade
+    })
 
     network {
         network_id = data.xenorchestra_network.net.id
@@ -47,7 +53,11 @@ resource "xenorchestra_vm" "k3s_workers" {
     memory_max = var.k3s_workers.memory * pow(1024,2)
     template = data.xenorchestra_template.template.id
     affinity_host = data.xenorchestra_pool.pool.master
-    cloud_config = xenorchestra_cloud_config.node_config.template
+    cloud_config = templatefile("${path.module}/cloud_config.tftpl", {
+      hostname = "${local.hostname_prefix}-worker-${count.index + 1}"
+      ssh_authorized_keys = var.ssh_public_key
+      apt_upgrade = var.apt_upgrade
+    })
 
     network {
         network_id = data.xenorchestra_network.net.id

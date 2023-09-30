@@ -1,5 +1,5 @@
 #cloud-config
-hostname: {name}%
+hostname: ${hostname}
 package_upgrade: ${apt_upgrade}
 packages:
   - xe-guest-utilities
