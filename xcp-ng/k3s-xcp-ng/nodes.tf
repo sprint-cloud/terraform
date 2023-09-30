@@ -30,6 +30,7 @@ resource "xenorchestra_vm" "k3s_servers" {
     tags = [
         "terraform",
         "k3s",
+        "server",
         var.cluster_name
     ]
     timeouts {
@@ -62,6 +63,7 @@ resource "xenorchestra_vm" "k3s_workers" {
     tags = [
         "terraform",
         "k3s",
+        "worker",
         var.cluster_name
     ]
     timeouts {
