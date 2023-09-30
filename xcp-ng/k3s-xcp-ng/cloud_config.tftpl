@@ -1,5 +1,7 @@
 #cloud-config
-package_upgrade: false
+package_upgrade: ${apt_upgrade}
+packages:
+  - xe-guest-utilities
 
 ssh_pwauth: false
 

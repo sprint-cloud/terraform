@@ -2,6 +2,7 @@ resource "xenorchestra_cloud_config" "node_config" {
   name = "k3s node cloud config"
   template = templatefile("${path.module}/cloud_config.tftpl", {
     ssh_authorized_keys = var.ssh_public_key
+    apt_upgrade = var.apt_upgrade
   })
 }
 

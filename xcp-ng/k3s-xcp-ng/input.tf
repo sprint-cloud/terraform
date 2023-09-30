@@ -34,6 +34,11 @@ variable "ssh_public_key" {
     description = "Public ssh key to allow acces to nodes"
 }
 
+variable "apt_upgrade" {
+    type = bool
+    default = false
+    description = "Perform apt upgrade on nodes"
+}
 variable "k3s_servers" {
   type = object({
     num = number
